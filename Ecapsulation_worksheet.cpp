@@ -52,6 +52,16 @@ public:
         std::cout << name << "take damage " << damage << "\n";
     }
 
+    bool equipWeapon(int weaponIndex, std::vector<Weapon> &weapons) {
+        if (weaponIndex >= 0 && weaponIndex < weapons.size()) {
+            currentWeapon = &weapons[weaponIndex];
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     bool isAlive()
     {
         if (health <= 0) {
@@ -128,8 +138,6 @@ public:
             }
             player.randomlyHealPlayer();
         }
-        equipRandomWeapon(player);
-        equipRandomWeapon(enemy);
 
         bool playerAlive = player.isAlive();
         bool enemyAlive = enemy.isAlive();
@@ -142,28 +150,20 @@ public:
         }
     }
 
-    void equipPlayerWeapon(int weaponIndex) {
-        if (weaponIndex >= 0 && weaponIndex < weapons.size()) {
-            player.currentWeapon=&weapons[weaponIndex];
+    void equipAllWeapons(int weaponIndexPlayer, int weaponIndexEnemy)
+    {
+        bool playerHasWeapon = player.equipWeapon(weaponIndexPlayer, weapons);
+        bool enemyHasWeapon = enemy.equipWeapon(weaponIndexEnemy, weapons);
+        if (playerHasWeapon == false) {
+            int randomIndex = std::rand() % weapons.size();
+            Weapon* selectedWeapon = &weapons[randomIndex];
+            player.currentWeapon = selectedWeapon;
         }
-    }
-
-    void equipEnemyWeapon(int weaponIndex) {
-        if (weaponIndex >= 0 && weaponIndex < weapons.size()) {
-            enemy.currentWeapon = &weapons[weaponIndex];
+        if (enemyHasWeapon == false) {
+            int randomIndex = std::rand() % weapons.size();
+            Weapon* selectedWeapon = &weapons[randomIndex];
+            enemy.currentWeapon = selectedWeapon;
         }
-    }
-
-
-    Weapon* equipRandomWeapon(Character& character) {
-
-        if (weapons.empty()) {
-            return nullptr;
-        }
-        int randomIndex = std::rand() % weapons.size();
-        Weapon* selectedWeapon = &weapons[randomIndex];
-        character.currentWeapon = selectedWeapon;
-        return selectedWeapon;
     }
 };
 
@@ -186,9 +186,7 @@ int main() {
     game.addWeapon(bow);
 
     // Equip weapons
-    game.equipPlayerWeapon(0); // Equip sword to player
-    game.equipEnemyWeapon(1);  // Equip axe to enemy
-
+    game.equipAllWeapons(0, 1); // Equip sword to player and Equip axe to enemy
 
     game.startGame();
 
