@@ -52,6 +52,16 @@ public:
         std::cout << name << "take damage " << damage << "\n";
     }
 
+    bool isAlive()
+    {
+        if (health <= 0) {
+            std::cout << name << " has been defeated.\n";
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 };
 
 class Player : public Character {
@@ -121,14 +131,13 @@ public:
         equipRandomWeapon(player);
         equipRandomWeapon(enemy);
 
-
+        bool playerAlive = player.isAlive();
+        bool enemyAlive = enemy.isAlive();
         
-        if (player.getHealth() <= 0) {
-            std::cout << player.getName() << " has been defeated.\n";
+        if (playerAlive == false) {
             return 1;
         }
-        else if (enemy.getHealth() <= 0) {
-            std::cout << enemy.getName() << " has been defeated.\n";
+        else if (enemyAlive == false) {
             return 0;
         }
     }
@@ -156,18 +165,6 @@ public:
         character.currentWeapon = selectedWeapon;
         return selectedWeapon;
     }
-
-    /*void randomlyHealPlayer() {
-        int healAmount = std::rand() % 50 + 1; // heal between 1 and 50 point
-        healPlayer(healAmount);
-    }
-
-    void healPlayer(int amount) {
-        if (player.getHealth() > 0) {
-            player.setHealth(player.getHealth() + amount);
-            std::cout << "Player healed by " << amount << " points.\n";
-        }
-    }*/
 };
 
 // Main Function
